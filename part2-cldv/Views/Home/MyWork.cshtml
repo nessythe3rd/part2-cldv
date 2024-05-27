@@ -1,0 +1,148 @@
+﻿<center><h3>Product List</h3></center>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card" style="width: 16rem;">
+                <img src="~/images/africna owmen painting.jpg" width="254" height="250" />
+                <div class="card-body">
+                    <p class="card-text">Name:African Women Painting</p>
+                    <b><p>Price:R750</p></b>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card" style="width: 16rem;">
+                <img src="~/images/rhino.jpg" width="254" height="250" />
+                <div class="card-body">
+                    <p class="card-text">Name:Rhino Statue</p>
+                    <b><p>Price:R250</p></b>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card" style="width: 16rem;">
+                <img src="~/images/basket.jpg" width="254" height="250" />
+                <div class="card-body">
+                    <p class="card-text">Name:African Basket</p>
+                    <b><p>Price:R350</p></b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card" style="width: 16rem;">
+                <img src="~/images/cup.jpg"  width="254" height="250" />
+                <div class="card-body">
+                    <p class="card-text">Name:Rhino Mug</p>
+                    <b><p>Price:R150</p></b>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card" style="width: 16rem;">
+                <img src="~/images/african drum.jpg" width="254" height="250" />
+                <div class="card-body">
+                    <p class="card-text">Name:Bongo Drum</p>
+                    <b><p>Price:R350</b></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card" style="width: 16rem;">
+                <img src="~/images/bowl.jpg"  width="254" height="250" />
+                <div class="card-body">
+                    <p class="card-text">Name:Spiral Bowl</p>
+                    <b><p>Price:R250</p></b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+</head>
+<body>
+    <center><h3>Add Product</h3></center>
+    <form id="addItemForm" asp-controller="Product" asp-action="Index" method="post">
+        <label for="itemName">Product Name:</label>
+        <input type="text" id="itemName" name="Name" required><br><br>
+        <label for="itemPrice">Product Price (R):</label>
+        <input type="number" id="itemPrice" name="Price" required><br><br>
+        <input type="submit" value="Add Item" onclick="addItem(event)">
+    </form>
+
+    <!-- Display added items -->
+    <div id="addedItems">
+        <center><h3>View Product</h3></center>
+        <ul id="itemList"></ul>
+    </div>
+
+    <script>
+        function addItem(event) {
+            event.preventDefault(); // Prevent form submission
+            var form = document.getElementById('addItemForm');
+            var formData = new FormData(form);
+
+            // Display added item below the form
+            var addedItems = document.getElementById('addedItems');
+            var newItemDiv = document.createElement('div');
+            var newItemName = document.createElement('span');
+            newItemName.textContent = 'Name: ' + formData.get('Name');
+            var newItemPrice = document.createElement('span');
+            newItemPrice.textContent = 'Price: R ' + formData.get('Price');
+            var editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.onclick = function () {
+                // Add edit functionality here
+                alert('Edit button clicked for ' + formData.get('Name'));
+            };
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = function () {
+                // Add delete functionality here
+                newItemDiv.remove(); // Remove the item from the DOM
+                alert('Deleted: ' + formData.get('Name'));
+            };
+            newItemDiv.appendChild(newItemName);
+            newItemDiv.appendChild(document.createElement('br'));
+            newItemDiv.appendChild(newItemPrice);
+            newItemDiv.appendChild(editButton);
+            newItemDiv.appendChild(deleteButton);
+            addedItems.appendChild(newItemDiv);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Display added item in the existing list
+                    var itemList = document.getElementById('itemList');
+                    var li = document.createElement('li');
+                    li.textContent = data.name + ' - Price: R ' + data.price;
+                    itemList.appendChild(li);
+
+                    // Clear the form
+                    form.reset();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
